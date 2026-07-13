@@ -9,8 +9,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.3.0",
     "cookies-next": "^6.1.1",
     "firebase": "^12.15.0",
+    "mdb-react-ui-kit": "^10.0.0",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4"

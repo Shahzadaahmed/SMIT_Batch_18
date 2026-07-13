@@ -1,3 +1,7 @@
+// MDB Ui Integration...!
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 const RootLayout = ({
   children,
 }: Readonly<{
@@ -8,7 +12,7 @@ const RootLayout = ({
       lang="en"
     >
       <body>
-        {children}
+          {children}
       </body>
     </html>
   );

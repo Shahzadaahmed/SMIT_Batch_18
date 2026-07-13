@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { auth, db } from "@/src/utils/firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { addDoc, collection } from 'firebase/firestore';
+import styles from "../login/login.module.css";
 
 const SignUp = () => {
 
@@ -41,7 +42,7 @@ const SignUp = () => {
 
     return (
         <div>
-            <h1> Sign Up Screen! </h1>
+            <h1 className={styles.head}> Sign Up Screen! </h1>
 
             <input
                 type="email"

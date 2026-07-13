@@ -23,6 +23,9 @@ const Navbar = () => {
             <Link href={"/services"}> Services </Link>
         </li>
         <li>
+            <Link href={"/new-users"}> New Users </Link>
+        </li>
+        <li>
             <Link href={"/signup"}> Sign Up </Link>
         </li>
         <li>

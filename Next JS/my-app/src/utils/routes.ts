@@ -6,7 +6,8 @@ const privateRoutes = [
     "/contact",
     "/contact/profile",
     "/services",
-    "/users"
+    "/users",
+    "/new-users"
 ];
 
 export { publicRoutes, privateRoutes };
