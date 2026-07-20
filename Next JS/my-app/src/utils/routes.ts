@@ -7,7 +7,8 @@ const privateRoutes = [
     "/contact/profile",
     "/services",
     "/users",
-    "/new-users"
+    "/new-users",
+    "/animation"
 ];
 
 export { publicRoutes, privateRoutes };
