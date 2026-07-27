@@ -22,8 +22,11 @@ const App = () => {
       }
     }
 
-    catch (error) {
-      console.log('Err while fetching all users:', error);
+    catch (error: any) {
+      console.log('Err while fetching all users:', error.response);
+      const { status } = error.response;
+
+      if (status == 400) setUsers([]);
     };
   };
 
@@ -40,11 +43,33 @@ const App = () => {
 
       if (status == 200) {
         fetchAllUsers();
+        setNewUser("");
       }
     }
 
     catch (error) {
       console.log('Err while adding user:', error);
+    }
+  }
+
+  const deleteUser = async (index: number) => {
+    console.log('Index val:', index);
+    try {
+      let apiUrl = `http://localhost:5050/api/user/delete/${index}`
+      let res = await axios({
+        url: apiUrl,
+        method: "DELETE"
+      });
+      console.log(res);
+      const { status, data } = res;
+
+      if (status == 200) {
+        fetchAllUsers();
+      }
+    }
+
+    catch (error) {
+      console.log('Err while deleting user:', error);
     }
   }
 
@@ -70,7 +95,12 @@ const App = () => {
       <ul>
         {
           users.map((item: string, index: number) => {
-            return <li key={index}> {item} </li>
+            return (
+              <li key={index}>
+                {item}
+                <button onClick={() => deleteUser(index)}> Delete Item </button>
+              </li>
+            )
           })
         }
       </ul>
