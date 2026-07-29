@@ -6,6 +6,8 @@ import axios from 'axios';
 const App = () => {
   const [users, setUsers] = useState<string[]>([]);
   const [newUser, setNewUser] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
+  const [targetKey, setTargetKey] = useState<string | number>("");
 
   const fetchAllUsers = async () => {
     try {
@@ -73,6 +75,39 @@ const App = () => {
     }
   }
 
+  const editUser = (index: number) => {
+    console.log('Index val:', index);
+    setIsEdit(true);
+    setNewUser(users[index]);
+    setTargetKey(index);
+  }
+
+  const updateUser = async () => {
+    try {
+      const apiUrl = "http://localhost:5050/api/user/update";
+      let res = await axios({
+        url: apiUrl,
+        method: "PUT",
+        data: {
+          key: Number(targetKey),
+          newVal: newUser
+        }
+      });
+      console.log('Update user res:', res);
+      const { status } = res;
+      if (status == 200) {
+        fetchAllUsers();
+        setIsEdit(false);
+        setNewUser("");
+        setTargetKey('');
+      }
+    }
+
+    catch (error: any) {
+      console.log('Something went wrong while updating user:', error?.response);
+    };
+  }
+
   useEffect(() => {
     fetchAllUsers();
   }, []);
@@ -90,7 +125,9 @@ const App = () => {
         onChange={(e) => setNewUser(e.target.value)}
       />
 
-      <button onClick={addUser}> Add User </button>
+      {
+        isEdit ? <button onClick={updateUser}> Update User </button> : <button onClick={addUser}> Add User </button>
+      }
 
       <ul>
         {
@@ -99,6 +136,7 @@ const App = () => {
               <li key={index}>
                 {item}
                 <button onClick={() => deleteUser(index)}> Delete Item </button>
+                <button onClick={() => editUser(index)}> Edit Item </button>
               </li>
             )
           })
