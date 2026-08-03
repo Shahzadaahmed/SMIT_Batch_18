@@ -2,8 +2,16 @@ import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 
-// let users = ['Ahmed', 'Ali', 'Aziz', 'Samad', 'Faraz'];
 let users = [];
+// {
+//     id : 1,
+//     name : "",
+//     email : "",
+//     pass : ""
+// }
+
+// [2 , 8 , 4 , 1]
+// [32 , 8 , 16 , 64]
 
 const port = 5050;
 const server = express();
@@ -90,3 +98,4 @@ server.listen(port, () => {
     console.log('Your Node JS server is running!');
 });
 // "leet**cod*d*e"
+// "lecoe"
