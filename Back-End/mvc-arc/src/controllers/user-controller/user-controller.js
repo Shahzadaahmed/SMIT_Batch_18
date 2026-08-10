@@ -76,7 +76,6 @@ const fetchUsers = async (req, res) => {
 };
 
 // Delete user controller...!
-
 const handleDeleteUser = async (req, res) => {
     try {
         const { uid } = req.params;
@@ -110,6 +109,38 @@ const handleDeleteUser = async (req, res) => {
             message: "Err while deletingt user!"
         });
     }
-}
+};
 
-export { greetUser, createUser, fetchUsers, handleDeleteUser };
+// Update user controller...! { _id : uid },
+const handleUpdateUser = async (req, res) => {
+    const { uid, updatedName, updatedPass } = req.body;
+
+    try {
+        const update = await UserModal.findByIdAndUpdate(
+            uid,
+            {
+                userName: updatedName,
+                password: updatedPass
+            },
+            { new: true }
+        );
+        console.log('Username:', update?.userName);
+
+        if (update) {
+            return res.status(200).send({
+                status: true,
+                message: "User updated successfully!"
+            });
+        }
+    }
+
+    catch (error) {
+        console.log(`Err while updating user: ${error}`);
+        return res.status(500).send({
+            status: false,
+            message: "Err while updating user!"
+        });
+    };
+};
+
+export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser };

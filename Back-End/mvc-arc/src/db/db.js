@@ -2,12 +2,10 @@
 
 import mongoose from "mongoose";
 
-let dbUrl = "mongodb+srv://AdminB18:Admin123@smit.qj6vxxm.mongodb.net/?appName=SMIT";
-
 const connectDB = async () => {
     try {
         const res = await mongoose.connect(
-            dbUrl,
+            process.env.DB_URL,
             { dbName: "B18_DB" }
         );
         res && console.log('Mongo DB connected successfully!');
