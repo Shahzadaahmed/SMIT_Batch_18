@@ -2,6 +2,7 @@
 
 import UserModal from "../../modals/user-modal/user-modal.js";
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const greetUser = (req, res) => {
     return res.status(200).send({
@@ -18,9 +19,15 @@ const createUser = async (req, res) => {
                 status: false,
                 message: "Email already exist!"
             });
-        }
+        };
 
-        const newUser = new UserModal(req.body);
+        // Note: Hashing password...!
+        const securePass = await bcrypt.hash(req?.body?.password, 10);
+
+        let userData = { ...req?.body, password: securePass };
+        console.log('User: ', userData);
+
+        const newUser = new UserModal(userData);
         const saveUser = await newUser.save();
 
         if (saveUser) {
@@ -28,7 +35,7 @@ const createUser = async (req, res) => {
                 status: true,
                 message: "User saved successfully"
             });
-        }
+        };
     }
 
     catch (error) {
@@ -38,7 +45,7 @@ const createUser = async (req, res) => {
             message: "Internal server error!"
         });
     };
-}
+};
 
 // fetch users controller...!
 const fetchUsers = async (req, res) => {
@@ -143,4 +150,49 @@ const handleUpdateUser = async (req, res) => {
     };
 };
 
-export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser };
+// Log in controller...!
+const handleLogIn = async (req, res) => {
+    try {
+        const { email, password } = req?.body;
+
+        if (!email || !password) {
+            return res.status(400).send({
+                status: false,
+                message: "Validation Err"
+            });
+        };
+
+        const isUserExist = await UserModal.findOne({ email: email });
+        if (!isUserExist) {
+            return res.status(401).send({
+                status: false,
+                message: "User does not exist"
+            });
+        };
+
+        const checkPassword = await bcrypt.compare(password, isUserExist.password);
+        if (!checkPassword) {
+            return res.status(404).send({
+                status: false,
+                message: "Password did not match"
+            });
+        };
+
+        // 200
+        return res.status(200).send({
+            status: true,
+            message: "You have logged in successfully",
+            data: isUserExist
+        });
+    }
+
+    catch (error) {
+        console.log(`Err while login user: ${error}`);
+        return res.status(500).send({
+            status: false,
+            message: "Err while login user!"
+        });
+    };
+}
+
+export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser, handleLogIn };

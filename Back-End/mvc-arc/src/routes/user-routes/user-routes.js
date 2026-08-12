@@ -1,7 +1,7 @@
 // All user related routes are defined here...!
 
 import express from "express";
-import { greetUser, createUser , fetchUsers , handleDeleteUser , handleUpdateUser } from "../../controllers/user-controller/user-controller.js";
+import { greetUser, createUser , fetchUsers , handleDeleteUser , handleUpdateUser , handleLogIn } from "../../controllers/user-controller/user-controller.js";
 
 const router = express.Router();
 
@@ -14,5 +14,7 @@ router.route('/users/fetch').get(fetchUsers);
 router.route('/user/delete/:uid').delete(handleDeleteUser);
 
 router.route('/user/update').put(handleUpdateUser);
+
+router.route('/login').post(handleLogIn);
 
 export default router;
