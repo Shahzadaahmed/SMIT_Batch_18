@@ -3,6 +3,7 @@
 import UserModal from "../../modals/user-modal/user-modal.js";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const greetUser = (req, res) => {
     return res.status(200).send({
@@ -178,11 +179,24 @@ const handleLogIn = async (req, res) => {
             });
         };
 
+        // Generating token:
+        const token = jwt.sign(
+            {
+                name: isUserExist.userName,
+                email: isUserExist.email
+            },
+            process.env.JWT_Secret,
+            {
+                expiresIn: '1h'
+            }
+        );
+
         // 200
         return res.status(200).send({
             status: true,
             message: "You have logged in successfully",
-            data: isUserExist
+            // data: isUserExist,
+            token : token
         });
     }
 

@@ -13,7 +13,7 @@ config({ path: "./.env" });
 dns.setDefaultResultOrder("ipv4first"); // For resolving hostnames to IPv4 addresses first...!
 dns.setServers(["1.1.1.1", "8.8.8.8"]); // For setting custom DNS servers...!
 
-const port = 5050;
+const port = process.env.PORT;
 const server = express();
 
 server.use(cors());
@@ -21,7 +21,7 @@ server.use(morgan('dev'));
 server.use(express.json());
 server.use(userRoutes);
 
-server.listen(process.env.PORT, () => {
+server.listen(port, () => {
     console.log('Your Node JS server is running!');
     connectDB();
 });
