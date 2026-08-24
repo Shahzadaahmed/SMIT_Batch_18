@@ -1,101 +1,62 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
+import multer from "multer";
 
-let users = [];
-// {
-//     id : 1,
-//     name : "",
-//     email : "",
-//     pass : ""
-// }
-
-// [2 , 8 , 4 , 1]
-// [32 , 8 , 16 , 64]
+// Create uploads folder if not exist...!
+if (!fs.existsSync('uploads')) {
+    fs.mkdirSync('uploads');
+};
 
 const port = 5050;
 const server = express();
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        const uniqueFileName = Date.now() + '-' + file.originalname; // 12345-ahmed.png
+        cb(null, uniqueFileName)
+    }
+});
+const uploadMedia = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 } // 5mb
+});
 
 server.use(cors());
 server.use(morgan('dev'));
 server.use(express.json());
+server.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
-// First Api...!
-server.get("/", (req, res) => {
-    return res.status(200).send({
-        message: "Your 1st api in Node JS!"
-    });
-});
+server.post('/api/profile/upload', uploadMedia.single('image'), (req, res) => {
+    console.log('File:', req.file);
 
-// Api to fetch all users...!
-server.get("/api/users", (req, res) => {
-    if (users.length == 0) {
-        return res.status(400).send({
-            status: false,
-            message: "No users data available",
-            data: []
+    try {
+        if (!req.file) {
+            return res.status(400).send({
+                status: false,
+                message: "Image is required!"
+            });
+        };
+
+        // 200:
+        return res.status(200).send({
+            status: true,
+            message: "Image uploaded successfully!"
         });
-    };
+    }
 
-    return res.status(200).send({
-        status: true,
-        data: users
-    });
-});
-
-// APi to add user data...!
-server.post("/api/user/add", (req, res) => {
-    const { user } = req.body;
-    console.log('Body:', user);
-
-    if (user == undefined || user == "") {
-        return res.status(400).send({
-            status: false,
-            message: "User name is required"
-        });
-    };
-
-    const usersClone = [...users];
-    usersClone.push(user);
-    users = usersClone;
-
-    return res.status(200).send({
-        status: true,
-        message: "Data added successfully!"
-    });
-});
-
-// APi to delete user data...!
-server.delete("/api/user/delete/:key", (req, res) => {
-    const { key } = req.params;
-    console.log('Key:', key);
-
-    const usersClone = [...users];
-    usersClone.splice(key, 1);
-    users = usersClone;
-
-    return res.status(200).send({
-        status: true,
-        message: "User deleted successfully!"
-    });
-});
-
-// APi to update user data...!
-server.put("/api/user/update", (req, res) => {
-    const { key, newVal } = req.body;
-
-    const usersClone = [...users];
-    usersClone.splice(key, 1, newVal);
-    users = usersClone;
-
-    return res.status(200).send({
-        status: true,
-        message: "Data updated successfully!"
-    });
+    catch (error) {
+        console.log('Err while uploading media:', error);
+    }
 });
 
 server.listen(port, () => {
     console.log('Your Node JS server is running!');
 });
-// "leet**cod*d*e"
-// "lecoe"
+
+// Server space - Only for text data
+// Storage - firebase cloudinary aws
