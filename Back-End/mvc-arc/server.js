@@ -20,10 +20,9 @@ const port = process.env.PORT;
 const server = express();
 const limit = rateLimit({
     windowMs: 1000 * 60 * 15,
-    max: 10,
+    max: 50,
     standardHeaders: true
 });
-// let productRoutes;
 
 server.use(compression());
 server.use(helmet());
@@ -32,7 +31,6 @@ server.use(morgan('dev'));
 server.use(express.json());
 server.use(limit);
 server.use(userRoutes);
-// server.use(limit, productRoutes);
 
 server.listen(port, () => {
     console.log('Your Node JS server is running!');

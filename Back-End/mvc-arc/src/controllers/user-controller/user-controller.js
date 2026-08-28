@@ -52,39 +52,39 @@ const createUser = async (req, res) => {
 };
 
 // fetch users controller...!
-const fetchUsers = async (req, res) => {
-    try {
-        const { role } = req.query;
-        console.log('Query:', role);
+// const fetchUsers = async (req, res) => {
+//     try {
+//         const { role } = req.query;
+//         console.log('Query:', role);
 
-        const counts = await UserModal.countDocuments();
-        console.log('Counts:', counts);
-        if (counts == 0) {
-            return res.status(400).send({
-                status: false,
-                message: "No User found",
-                data: []
-            });
-        }
+//         const counts = await UserModal.countDocuments();
+//         console.log('Counts:', counts);
+//         if (counts == 0) {
+//             return res.status(400).send({
+//                 status: false,
+//                 message: "No User found",
+//                 data: []
+//             });
+//         }
 
-        const query = (role) ? ({ role }) : ({});
-        // const fetchData = await UserModal.find(query).select('userName email');
-        const fetchData = await UserModal.find(query).select('-password');
-        return res.status(200).send({
-            status: true,
-            message: "Users",
-            data: fetchData
-        });
-    }
+//         const query = (role) ? ({ role }) : ({});
+//         // const fetchData = await UserModal.find(query).select('userName email');
+//         const fetchData = await UserModal.find(query).select('-password');
+//         return res.status(200).send({
+//             status: true,
+//             message: "Users",
+//             data: fetchData
+//         });
+//     }
 
-    catch (error) {
-        console.log(`Err while fetching user: ${error}`);
-        return res.status(500).send({
-            status: false,
-            message: "Err while fetching user!"
-        });
-    };
-};
+//     catch (error) {
+//         console.log(`Err while fetching user: ${error}`);
+//         return res.status(500).send({
+//             status: false,
+//             message: "Err while fetching user!"
+//         });
+//     };
+// };
 
 // fetch user by id controller...!
 const fetchUserByID = async (req, res) => {
@@ -247,6 +247,65 @@ const handleLogIn = async (req, res) => {
             message: "Err while login user!"
         });
     };
-}
+};
 
-export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser, handleLogIn, fetchUserByID };
+// Add bulk data in DB controller...!
+const addBulkData = async (req, res) => {
+    try {
+        const insertData = await UserModal.insertMany(users);
+
+        if (insertData) {
+            return res.status(200).send({
+                status: true,
+                message: "Bulk data added successfully!"
+            });
+        };
+    }
+
+    catch (error) {
+        console.log(`Err while adding bulk data: ${error}`);
+        return res.status(500).send({
+            status: false,
+            message: "Err while adding bulk data!"
+        });
+    }
+};
+
+const fetchUsers = async (req, res) => {
+    try {
+        const { pageVal, limitVal } = req.query;
+        console.log(`Page: ${pageVal}. Limit: ${limitVal}`);
+
+        const page = Number(pageVal) || 1;
+        const limit = Number(limitVal) || 10;
+        const skip = (page - 1) * limit;
+
+        const countsData = await UserModal.countDocuments();
+        const fetchData = await UserModal
+            .find()
+            .skip(skip)
+            .limit(limit);
+            
+        return res.status(200).send({
+            status: true,
+            message: "Users",
+            data: {
+                users: fetchData,
+                count: countsData,
+                page: page,
+                skip: skip
+            }
+        });
+    }
+
+    catch (error) {
+        console.log(`Err while fetching user: ${error}`);
+        return res.status(500).send({
+            status: false,
+            message: "Err while fetching user!"
+        });
+    };
+};
+
+
+export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser, handleLogIn, fetchUserByID, addBulkData };
