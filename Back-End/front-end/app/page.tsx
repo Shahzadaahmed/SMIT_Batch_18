@@ -4,24 +4,21 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const App = () => {
-  const [users, setUsers] = useState<string[]>([]);
+  const [users, setUsers] = useState<any>([]);
   const [newUser, setNewUser] = useState("");
   const [isEdit, setIsEdit] = useState(false);
   const [targetKey, setTargetKey] = useState<string | number>("");
 
   const fetchAllUsers = async () => {
     try {
-      let apiUrl = "http://localhost:5050/api/users";
+      let apiUrl = "https://be-deployment-production.up.railway.app/users/fetch?pageVal=1&limitVal=10";
       let res = await axios({
         url: apiUrl,
         method: "GET"
       });
       console.log('Api res:', res);
-      const { status, data } = res;
-
-      if (status == 200) {
-        setUsers(data?.data);
-      }
+      const { data } = res;
+      setUsers(data?.data?.users);
     }
 
     catch (error: any) {
@@ -131,10 +128,10 @@ const App = () => {
 
       <ul>
         {
-          users.map((item: string, index: number) => {
+          users.map((item: any, index: number) => {
             return (
               <li key={index}>
-                {item}
+                {item?.userName}
                 <button onClick={() => deleteUser(index)}> Delete Item </button>
                 <button onClick={() => editUser(index)}> Edit Item </button>
               </li>
