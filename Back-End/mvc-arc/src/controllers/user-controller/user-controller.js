@@ -6,6 +6,12 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodeCache from "node-cache";
 import nodemailer from "nodemailer";
+import Stripe from "stripe";
+
+const stripe = new Stripe(
+    "sk_test_51T5wFfFpwbFPjMDntBGi09hfibppv5LoQgA3n0O9K9WS3xUmYvj5fIhGesnZxEWwb30zErve3WwISZEvUCPAqZlr00AEFc1zJ2sk_test_51T5wFfFpwbFPjMDntBGi09hfibppv5LoQgA3n0O9K9WS3xUmYvj5fIhGesnZxEWwb30zErve3WwISZEvUCPAqZlr00AEFc1zJ2",
+    { apiVersion: '2023-10-16' }
+);
 
 const cacheClient = new nodeCache();
 
@@ -433,5 +439,49 @@ const handleSendEmail = async (req, res) => {
     };
 };
 
+const handleCheckOut = async (req, res) => {
+    const { items } = req.body;
+    console.log('Items: ', items);
 
-export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser, handleLogIn, fetchUserByID, addBulkData, handleSendEmail };
+    try {
+        const modifyData = items.map((item, index) => {
+            return {
+                price_data: {
+                    currency: "usd",
+                    product_data: {
+                        name: item.productName,
+                        images: [item.productImage]
+                    },
+                    unit_amount: Math.round(item.productPrice * 100)
+                },
+                quantity: item.productQuantity
+            };
+        });
+
+        const paymentSession = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            mode: 'payment',
+            line_items: modifyData,
+            success_url: "https://www.angeljackets.com/",
+            cancel_url: "https://www.google.com/"
+        });
+        console.log('Payment session: ', paymentSession);
+
+        if (paymentSession) {
+            return res.status(200).send({
+                status: true,
+                message: "Payment successfull",
+                data: {
+                    sessionId: paymentSession.id,
+                    checkoutUrl: paymentSession.url
+                }
+            });
+        };
+    }
+
+    catch (error) {
+        console.log('Something went wrong while payment integration:', error);
+    };
+};
+
+export { greetUser, createUser, fetchUsers, handleDeleteUser, handleUpdateUser, handleLogIn, fetchUserByID, addBulkData, handleSendEmail, handleCheckOut };

@@ -70,18 +70,52 @@
 //     }
 // }
 
-let userName = "muhammadahmed";
-let firstNRC;
-// console.log(userName.indexOf('u'));
-// console.log(userName.lastIndexOf('u'));
+// let userName = "muhammadahmed";
+// let firstNRC;
+// // console.log(userName.indexOf('u'));
+// // console.log(userName.lastIndexOf('u'));
 
-for (let i = 0; i < userName.length; i++) {
-    // console.log(userName[i]);
+// for (let i = 0; i < userName.length; i++) {
+//     // console.log(userName[i]);
 
-    if (userName.indexOf(userName[i]) == userName.lastIndexOf(userName[i])) {
-        firstNRC = userName[i];
-        break;
+//     if (userName.indexOf(userName[i]) == userName.lastIndexOf(userName[i])) {
+//         firstNRC = userName[i];
+//         break;
+//     };
+// };
+
+// console.log('First non repeating char: ' , firstNRC);
+
+
+
+
+const items = [
+    {
+        productName: "Blue jacket",
+        productPrice: 50,
+        productImage: "https://www.angeljackets.com/product_images/q/805/blue_leather_cafer_racer_jacket__91491_thumb.webp",
+        productQuantity: 2
+    },
+    {
+        productName: "Black jacket",
+        productPrice: 60,
+        productImage: "https://www.angeljackets.com/product_images/y/148/hooded_leather_jacket_womens_blue__54478_thumb.webp",
+        productQuantity: 1
+    }
+];
+
+const modifyData = items.map((item, index) => {
+    return {
+        price_data: {
+            currency: "usd",
+            product_data: {
+                name: item.productName,
+                images: [item.productImage]
+            },
+            unit_amount: Math.round(item.productPrice * 100)
+        },
+        quantity: item.productQuantity
     };
-};
+});
 
-console.log('First non repeating char: ' , firstNRC);
+console.log(modifyData);
