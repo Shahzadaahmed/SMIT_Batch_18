@@ -9,7 +9,7 @@ import nodemailer from "nodemailer";
 import Stripe from "stripe";
 
 const stripe = new Stripe(
-    "sk_test_51T5wFfFpwbFPjMDnf0mY5RKBay95DaWKWgnPW8mvM8VM2SuNJiawihZ60vm7Pd5QPd5dDgSoEyJF1SPmeNsA8fTF00Zrs4269o",
+    "Apni key dalo bhai",
     { apiVersion: '2026-08-26.dahlia' }
 );
 

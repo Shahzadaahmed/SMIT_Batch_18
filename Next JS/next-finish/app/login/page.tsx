@@ -94,7 +94,7 @@ import React from 'react';
 import axios from 'axios';
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripeSecret = "pk_test_51T5wFfFpwbFPjMDn2q3ybOk3fDaAOdqJJDkkiMxyxbRaGOaPn7Zv1GhMGKJwm8wav32i5BBPUJKnAYeUQOTtO2Op00Tq33uIeO";
+const stripeSecret = "Apni key dalo bhai";
 
 const CheckoutScreen = () => {
 
