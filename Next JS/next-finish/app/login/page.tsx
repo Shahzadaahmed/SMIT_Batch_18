@@ -94,7 +94,7 @@ import React from 'react';
 import axios from 'axios';
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripeSecret = "pk_test_51T5wFfFpwbFPjMDnZici1c6kfqwYIabxBOogSmCXhO5Efc3Wf06FZhLpfkVqTvoiie9XIIXDoeQUdlZPSwQIdwg7007iKv9uOL";
+const stripeSecret = "pk_test_51T5wFfFpwbFPjMDn2q3ybOk3fDaAOdqJJDkkiMxyxbRaGOaPn7Zv1GhMGKJwm8wav32i5BBPUJKnAYeUQOTtO2Op00Tq33uIeO";
 
 const CheckoutScreen = () => {
 
@@ -125,6 +125,11 @@ const CheckoutScreen = () => {
                 }
             });
             console.log('Payment res: ', res);
+            const { status, data } = res;
+
+            if (status == 200) {
+                window.location.href = data.data.checkoutUrl;
+            };
         }
 
         catch (error) {

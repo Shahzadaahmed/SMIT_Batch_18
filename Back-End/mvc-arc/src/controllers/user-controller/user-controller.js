@@ -9,8 +9,8 @@ import nodemailer from "nodemailer";
 import Stripe from "stripe";
 
 const stripe = new Stripe(
-    "sk_test_51T5wFfFpwbFPjMDntBGi09hfibppv5LoQgA3n0O9K9WS3xUmYvj5fIhGesnZxEWwb30zErve3WwISZEvUCPAqZlr00AEFc1zJ2sk_test_51T5wFfFpwbFPjMDntBGi09hfibppv5LoQgA3n0O9K9WS3xUmYvj5fIhGesnZxEWwb30zErve3WwISZEvUCPAqZlr00AEFc1zJ2",
-    { apiVersion: '2023-10-16' }
+    "sk_test_51T5wFfFpwbFPjMDnf0mY5RKBay95DaWKWgnPW8mvM8VM2SuNJiawihZ60vm7Pd5QPd5dDgSoEyJF1SPmeNsA8fTF00Zrs4269o",
+    { apiVersion: '2026-08-26.dahlia' }
 );
 
 const cacheClient = new nodeCache();
