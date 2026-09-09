@@ -9,7 +9,7 @@ import nodemailer from "nodemailer";
 import Stripe from "stripe";
 
 const stripe = new Stripe(
-    "",
+    process.env.key,
     { apiVersion: '2026-08-26.dahlia' }
 );
 

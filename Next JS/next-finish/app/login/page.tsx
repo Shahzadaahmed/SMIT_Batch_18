@@ -94,7 +94,7 @@ import React from 'react';
 import axios from 'axios';
 import { loadStripe } from "@stripe/stripe-js";
 
-const stripeSecret = "";
+const stripeSecret = process.env.key;
 
 const CheckoutScreen = () => {
 
