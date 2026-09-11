@@ -2,7 +2,7 @@ import pg from "pg";
 
 const { Pool } = pg;
 
-const pool = new Pool({
+const dbConfig = new Pool({
     user: "postgres",
     host: "localhost",
     port: 5432,
@@ -10,7 +10,7 @@ const pool = new Pool({
     password : "admin123"
 });
 
-pool
+dbConfig
     .connect()
     .then((res) => {
         console.log('Postgres DB connected successfully!');
@@ -20,4 +20,4 @@ pool
         console.log('Err while connection with postgres');
     });
 
-export default pool;
+export default dbConfig;
