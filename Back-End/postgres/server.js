@@ -170,6 +170,10 @@ server.delete("/user/delete/:uid", async (req, res) => {
   }
 });
 
+server.get("/session", (req, res) => {
+  res.redirect("https://lms.saylanimit.com/trainer");
+});
+
 server.listen(port, () => {
   console.log("Your Node JS server is running!");
 });

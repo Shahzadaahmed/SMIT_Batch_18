@@ -1,62 +1,97 @@
+// import express from "express";
+// import morgan from "morgan";
+// import cors from "cors";
+// // import fs from "fs";
+// // import path from "path";
+// // import multer from "multer";
+
+// // Create uploads folder if not exist...!
+// if (!fs.existsSync('uploads')) {
+//     fs.mkdirSync('uploads');
+// };
+
+// const port = 5050;
+// const server = express();
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/');
+//     },
+//     filename: (req, file, cb) => {
+//         const uniqueFileName = Date.now() + '-' + file.originalname; // 12345-ahmed.png
+//         cb(null, uniqueFileName)
+//     }
+// });
+// const uploadMedia = multer({
+//     storage,
+//     limits: { fileSize: 5 * 1024 * 1024 } // 5mb
+// });
+
+// server.use(cors());
+// server.use(morgan('dev'));
+// server.use(express.json());
+// server.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+
+// server.post('/api/profile/upload', uploadMedia.single('image'), (req, res) => {
+//     console.log('File:', req.file);
+
+//     try {
+//         if (!req.file) {
+//             return res.status(400).send({
+//                 status: false,
+//                 message: "Image is required!"
+//             });
+//         };
+
+//         // 200:
+//         return res.status(200).send({
+//             status: true,
+//             message: "Image uploaded successfully!"
+//         });
+//     }
+
+//     catch (error) {
+//         console.log('Err while uploading media:', error);
+//     }
+// });
+
+// server.listen(port, () => {
+//     console.log('Your Node JS server is running!');
+// });
+
+// // Server space - Only for text data
+// // Storage - firebase cloudinary aws
+
+// Web Sockets
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-import fs from "fs";
-import path from "path";
-import multer from "multer";
-
-// Create uploads folder if not exist...!
-if (!fs.existsSync('uploads')) {
-    fs.mkdirSync('uploads');
-};
+import http from "http";
+import { Server } from "socket.io";
 
 const port = 5050;
-const server = express();
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueFileName = Date.now() + '-' + file.originalname; // 12345-ahmed.png
-        cb(null, uniqueFileName)
-    }
-});
-const uploadMedia = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5mb
+const app = express();
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    method: ["GET", "POST", "DELETE", "PUT"],
+  },
 });
 
-server.use(cors());
-server.use(morgan('dev'));
-server.use(express.json());
-server.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use(cors());
+app.use(morgan("dev"));
+app.use(express.json());
 
-server.post('/api/profile/upload', uploadMedia.single('image'), (req, res) => {
-    console.log('File:', req.file);
+// Sockets functionality...!
+io.on("connect", (socket) => {
+  console.log("A user connected:", socket.id);
 
-    try {
-        if (!req.file) {
-            return res.status(400).send({
-                status: false,
-                message: "Image is required!"
-            });
-        };
-
-        // 200:
-        return res.status(200).send({
-            status: true,
-            message: "Image uploaded successfully!"
-        });
-    }
-
-    catch (error) {
-        console.log('Err while uploading media:', error);
-    }
+  // 2nd connection...!
+  socket.on("read-message", (data) => {
+    console.log("Message received in server:", data);
+  });
 });
 
-server.listen(port, () => {
-    console.log('Your Node JS server is running!');
+httpServer.listen(port, () => {
+  console.log("Your Node JS server is running!");
 });
-
-// Server space - Only for text data
-// Storage - firebase cloudinary aws
