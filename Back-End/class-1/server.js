@@ -98,7 +98,7 @@ io.on("connect", (socket) => {
 
   // 4th connection...!
   socket.on("register", (uid) => {
-    console.log("User id:", uid);
+    // console.log("User id:", uid);
     users[uid] = socket.id; // user saved...!
     console.log("Users:", users);
   });
@@ -107,6 +107,16 @@ io.on("connect", (socket) => {
   socket.on("private-msg", ({ to, message }) => {
     console.log("Message for:", to);
     console.log("Message:", message);
+
+    const targetSocket = users[to];
+
+    if (targetSocket) {
+      io.to(targetSocket).emit("read-messages", {
+        message,
+        from: socket.id,
+      });
+      
+    } else console.log("User not found");
   });
 });
 

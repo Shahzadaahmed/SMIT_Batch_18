@@ -19,6 +19,11 @@ const App = () => {
     // socket.on('welcome', (msgFromServer) => {
     //   console.log('Message received from server:', msgFromServer);
     // })
+
+    // Reading messages...!
+    socket.on('read-messages', (msgData) => {
+      console.log('Message received FE:', msgData);
+    });
   }, []);
 
   const submit = () => {

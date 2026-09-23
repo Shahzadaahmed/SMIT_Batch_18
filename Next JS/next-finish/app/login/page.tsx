@@ -168,6 +168,11 @@ const App = () => {
 
         // Saving users...!
         socket.emit('register', 'user_2');
+
+        // Reading messages...!
+        socket.on('read-messages', (msgData) => {
+            console.log('Message received FE:', msgData);
+        });
     }, []);
 
     const submit = () => {
