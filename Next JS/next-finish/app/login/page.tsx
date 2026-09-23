@@ -90,59 +90,99 @@
 
 
 
-import React from 'react';
-import axios from 'axios';
-import { loadStripe } from "@stripe/stripe-js";
+// import React from 'react';
+// import axios from 'axios';
+// import { loadStripe } from "@stripe/stripe-js";
 
-const stripeSecret = process.env.key;
+// const stripeSecret = process.env.key;
 
-const CheckoutScreen = () => {
+// const CheckoutScreen = () => {
 
-    const productData = [
-        {
-            productName: "Blue jacket",
-            productPrice: 50,
-            productImage: "https://www.angeljackets.com/product_images/q/805/blue_leather_cafer_racer_jacket__91491_thumb.webp",
-            productQuantity: 2
-        },
-        {
-            productName: "Black jacket",
-            productPrice: 60,
-            productImage: "https://www.angeljackets.com/product_images/y/148/hooded_leather_jacket_womens_blue__54478_thumb.webp",
-            productQuantity: 1
-        }
-    ]
+//     const productData = [
+//         {
+//             productName: "Blue jacket",
+//             productPrice: 50,
+//             productImage: "https://www.angeljackets.com/product_images/q/805/blue_leather_cafer_racer_jacket__91491_thumb.webp",
+//             productQuantity: 2
+//         },
+//         {
+//             productName: "Black jacket",
+//             productPrice: 60,
+//             productImage: "https://www.angeljackets.com/product_images/y/148/hooded_leather_jacket_womens_blue__54478_thumb.webp",
+//             productQuantity: 1
+//         }
+//     ]
 
-    const handleCheckout = async () => {
-        try {
-            await loadStripe(stripeSecret);
-            const apiUrl = "http://localhost:5050/check-out/session";
-            const res = await axios({
-                method: "POST",
-                url: apiUrl,
-                data: {
-                    items: productData
-                }
-            });
-            console.log('Payment res: ', res);
-            const { status, data } = res;
+//     const handleCheckout = async () => {
+//         try {
+//             await loadStripe(stripeSecret);
+//             const apiUrl = "http://localhost:5050/check-out/session";
+//             const res = await axios({
+//                 method: "POST",
+//                 url: apiUrl,
+//                 data: {
+//                     items: productData
+//                 }
+//             });
+//             console.log('Payment res: ', res);
+//             const { status, data } = res;
 
-            if (status == 200) {
-                window.location.href = data.data.checkoutUrl;
-            };
-        }
+//             if (status == 200) {
+//                 window.location.href = data.data.checkoutUrl;
+//             };
+//         }
 
-        catch (error) {
-            console.log('Err in payment integration:', error);
-        }
+//         catch (error) {
+//             console.log('Err in payment integration:', error);
+//         }
+//     };
+
+//     return (
+//         <div>
+//             <h1> Checkout Screen! </h1>
+//             <button onClick={handleCheckout}> Checkout </button>
+//         </div>
+//     );
+// };
+
+// export default CheckoutScreen;
+
+
+
+
+// Socket Code...! User 2
+'use client';
+
+import React, { useEffect } from "react";
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:5050', { autoConnect: false });
+
+const App = () => {
+
+    useEffect(() => {
+        socket.connect();
+        socket.on('connect', () => {
+            console.log('FE socket connected:', socket.id);
+        });
+
+        // Saving users...!
+        socket.emit('register', 'user_2');
+    }, []);
+
+    const submit = () => {
+        socket.emit('private-msg', {
+            to: 'user_1',
+            message: 'Hello i am user 2, I am fine, How about u?'
+        });
     };
 
     return (
         <div>
-            <h1> Checkout Screen! </h1>
-            <button onClick={handleCheckout}> Checkout </button>
+            <h1> I am user 2 </h1>
+            <button onClick={submit}> Submit </button>
         </div>
     );
 };
 
-export default CheckoutScreen;
+export default App;

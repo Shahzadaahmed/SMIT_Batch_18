@@ -82,13 +82,31 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
+const users = {};
+
 // Sockets functionality...!
 io.on("connect", (socket) => {
   console.log("A user connected:", socket.id);
 
   // 2nd connection...!
-  socket.on("read-message", (data) => {
-    console.log("Message received in server:", data);
+  // socket.on("read-message", (data) => {
+  //   console.log("Message received in server:", data);
+  // });
+
+  // 3rd connection...!
+  // socket.emit('welcome' , 'User has been connected');
+
+  // 4th connection...!
+  socket.on("register", (uid) => {
+    console.log("User id:", uid);
+    users[uid] = socket.id; // user saved...!
+    console.log("Users:", users);
+  });
+
+  // 5th conection
+  socket.on("private-msg", ({ to, message }) => {
+    console.log("Message for:", to);
+    console.log("Message:", message);
   });
 });
 
