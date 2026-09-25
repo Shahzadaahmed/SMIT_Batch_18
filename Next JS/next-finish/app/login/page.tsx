@@ -153,12 +153,15 @@
 // Socket Code...! User 2
 'use client';
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5050', { autoConnect: false });
 
 const App = () => {
+
+    const [input, setInput] = useState('');
+    const [allMessages, setAllMessages] = useState<any[]>([]);
 
     useEffect(() => {
         socket.connect();
@@ -172,20 +175,75 @@ const App = () => {
         // Reading messages...!
         socket.on('read-messages', (msgData) => {
             console.log('Message received FE:', msgData);
+
+            // const allMsgsClone = [...allMessages];
+            // allMsgsClone.push({
+            //     from: msgData?.from,
+            //     to: '',
+            //     message: msgData?.message
+            // });
+            // setAllMessages(allMsgsClone);
+
+            setAllMessages((prev) => [
+                ...prev,
+                {
+                    from: msgData?.from,
+                    to: '',
+                    message: msgData?.message
+                }
+            ]);
         });
     }, []);
 
     const submit = () => {
         socket.emit('private-msg', {
             to: 'user_1',
-            message: 'Hello i am user 2, I am fine, How about u?'
+            message: input
         });
+
+        // const allMsgsClone = [...allMessages];
+        // allMsgsClone.push({
+        //     from: 'user_1',
+        //     to: 'user_2',
+        //     message: input
+        // });
+        // setAllMessages(allMsgsClone);
+
+        setAllMessages((prevMsgs: any[]) =>
+            [
+                ...prevMsgs,
+                {
+                    from: 'user_1',
+                    to: 'user_2',
+                    message: input
+                }
+            ]
+        );
+        setInput('');
     };
 
     return (
         <div>
             <h1> I am user 2 </h1>
-            <button onClick={submit}> Submit </button>
+
+            <hr />
+            <input
+                type="text"
+                placeholder="Write Something..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+            />
+            <button onClick={submit}> Add </button>
+
+            <ul>
+                {
+                    allMessages.map((item, index) => {
+                        return (
+                            <li key={index}> {item?.message} </li>
+                        )
+                    })
+                }
+            </ul>
         </div>
     );
 };
