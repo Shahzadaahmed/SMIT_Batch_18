@@ -3,6 +3,7 @@
 import express from "express";
 import next from "next";
 import handleConnectDB from "./config/db.js";
+import userRoutes from "./routes/user-routes/user-routes.js";
 
 const dev = process.env.NODE_ENV != "production";
 
@@ -20,6 +21,9 @@ nextApp.prepare().then(async () => {
 
   // Middlewares...!
   app.use(express.json());
+
+  // Defining user routes...!
+  app.use("/api/user", userRoutes);
 
   // Test api...!
   app.get("/api/test", (req, res) => {
